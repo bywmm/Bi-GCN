@@ -1,15 +1,13 @@
 from torch.nn import Linear
 from torch_geometric.nn.conv import MessagePassing
 from torch_geometric.utils import add_self_loops, degree, softmax
-from torch_geometric.utils import add_remaining_self_loops, remove_self_loops
 import torch.nn.functional as F
 import torch
-from torch.nn import Parameter
 import math
+import torch_sparse
 from torch_scatter import scatter,scatter_add
 
-from module import BinaryLinear, BinActive
-
+from module import BinaryLinear
 
 
 class myBiGCNConv(MessagePassing):
@@ -46,7 +44,6 @@ class myBiGCNConv(MessagePassing):
             self.cached_result = edge_index, norm
 
         edge_index, norm = self.cached_result
-
 
         # Start propagating message
         x = self.propagate(edge_index,size=(x.size(0), x.size(0)),
