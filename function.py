@@ -10,8 +10,10 @@ import torch.nn.functional as F
 from torch.autograd import Function
 import math
 
+
 def where(cond, x1, x2):
     return cond.float() * x1 + (1 - cond.float()) * x2
+
 
 def halftone_error_diffusion(input, alpha=0.4375, beta=0.1875, gamma=0.3125, delta=0.0625):
     s = input.shape
@@ -54,6 +56,7 @@ def halftone_ordered_dithering(input):
     out = input - bayer_matrix_s
 
     return out.sign()
+
 
 class BinaryLinearFunction(Function):
     @staticmethod
@@ -125,7 +128,6 @@ class BinaryLinearScalarFunction(Function):
         m_add = m_add.sum(dim=1, keepdim=True).expand(s)
         m_add = m_add.mul(weight.sign()).div(n)
 
-
         if ctx.needs_input_grad[0]:
             grad_input = grad_output.mm(weight.sign())
         if ctx.needs_input_grad[1]:
@@ -185,7 +187,6 @@ class BinaryStraightThroughScalarFunction(Function):
         return grad_input
 
 
-
 class BinaryStraightThroughFunction(Function):
     @staticmethod
     def forward(ctx, input):
@@ -198,7 +199,6 @@ class BinaryStraightThroughFunction(Function):
         grad_input = grad_output.clone()
         grad_input = grad_input * where(torch.abs(input[0]) <= 1, 1, 0)
         return grad_input
-
 
 
 binary_linear = BinaryLinearFunction.apply

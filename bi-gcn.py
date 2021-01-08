@@ -8,7 +8,7 @@ parser.add_argument('--runs', type=int, default=100)
 parser.add_argument('--epochs', type=int, default=1000)
 parser.add_argument('--lr', type=float, default=0.001)
 parser.add_argument('--weight_decay', type=float, default=0.0005)  # 5e-4
-parser.add_argument('--early_stopping', type=int, default=200)  # 100
+parser.add_argument('--early_stopping', type=int, default=0)  # 100
 parser.add_argument('--hidden', type=int, default=64)
 parser.add_argument('--layers', type=int, default=2)
 parser.add_argument('--dropout', type=float, default=0.4)  # 0.5
@@ -16,12 +16,15 @@ args = parser.parse_args()
 
 os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu)
 
+
 import torch
+import datetime
 import torch.nn.functional as F
 from layers import myBiGCNConv as BiGCNConv
 from torch_geometric.datasets import Planetoid
 from train_eval import run
 from module import BinActive
+from tensorboardX import SummaryWriter
 
 
 class Net(torch.nn.Module):
@@ -67,7 +70,8 @@ print("Size of test set:", data.test_mask.sum().item())
 print("Num classes:", dataset.num_classes)
 print("Num features:", dataset.num_features)
 print(args)
+# writer = SummaryWriter('logs/bigcn_loaded_test_log_{0:%Y%m%d%H%M%S%f}'.format(datetime.datetime.now()))
+writer = None
 run(dataset, Net(dataset), args.runs, args.epochs, args.lr, args.weight_decay,
-    args.early_stopping)
-
+    args.early_stopping, writer)
 

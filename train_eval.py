@@ -10,7 +10,8 @@ from torch.optim import Adam
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
-def run(dataset, model, runs, epochs, lr, weight_decay, early_stopping):
+def run(dataset, model, runs, epochs, lr, weight_decay, early_stopping, writer=None):
+    # model.load_state_dict(torch.load('gcn.pkl'))
 
     val_losses, accs, durations = [], [], []
     for run_num in range(runs):
@@ -47,7 +48,15 @@ def run(dataset, model, runs, epochs, lr, weight_decay, early_stopping):
                 train_acc = eval_info['train_acc']
                 val_acc = eval_info['val_acc']
                 epoch_count = epoch
-
+                # torch.save(model.state_dict(), 'gcn_cora.pkl')
+                # print("model saved!")
+            if writer is not None:
+                writer.add_scalar('loss/train', eval_info['train_loss'], epoch)
+                writer.add_scalar('loss/val', eval_info['val_loss'], epoch)
+                writer.add_scalar('loss/test', eval_info['test_loss'], epoch)
+                writer.add_scalar('acc/train', eval_info['train_acc'], epoch)
+                writer.add_scalar('acc/val', eval_info['val_acc'], epoch)
+                writer.add_scalar('acc/test', eval_info['test_acc'], epoch)
             tr_loss_history.append(eval_info['train_loss'])
             val_loss_history.append(eval_info['val_loss'])
             tr_acc_history.append(eval_info['train_acc'])
