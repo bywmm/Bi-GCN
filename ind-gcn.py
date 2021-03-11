@@ -24,7 +24,7 @@ from tqdm import tqdm
 from torch_geometric.datasets import Reddit, Flickr
 from torch_geometric.data import NeighborSampler
 from layers import indGCNConv as GCNConv
-from module import BinActive
+from function import BinActive
 from sklearn.metrics import f1_score
 
 
@@ -74,11 +74,11 @@ class Ind_GCN(torch.nn.Module):
             if(args.binarized):
                 x = x - x.mean(dim=1, keepdim=True)
                 x = x / (x.std(dim=1, keepdim=True) + 0.0001)
-                x = BinActive(scalar=True)(x)
+                x = BinActive()(x)
 
                 x_target = x_target - x_target.mean(dim=1, keepdim=True)
                 x_target = x_target / (x_target.std(dim=1, keepdim=True) + 0.0001)
-                x_target = BinActive(scalar=True)(x_target)
+                x_target = BinActive()(x_target)
             x = self.convs[i]((x, x_target), edge_index)
             if i != self.num_layers - 1:
                 x = F.relu(x)
@@ -99,12 +99,12 @@ class Ind_GCN(torch.nn.Module):
                     # bn x
                     x = x - x.mean(dim=1, keepdim=True)
                     x = x / (x.std(dim=1, keepdim=True) + 0.0001)
-                    x = BinActive(scalar=True)(x)
+                    x = BinActive()(x)
 
                     # bn x_target
                     x_target = x_target - x_target.mean(dim=1, keepdim=True)
                     x_target = x_target / (x_target.std(dim=1, keepdim=True) + 0.0001)
-                    x_target = BinActive(scalar=True)(x_target)
+                    x_target = BinActive()(x_target)
                 x = self.convs[i]((x, x_target), edge_index)
                 if i != self.num_layers - 1:
                     x = F.relu(x)
@@ -175,8 +175,8 @@ for run in range(args.runs):
         if val_f1 > best_val:
             best_val = val_f1
             best_test = test_f1
-        print("Epoch: {:d}, Loss:{:.4f}, Train f1: {:.4f}, Val f1: {:.4f}, Test f1: {:.4f}".format(epoch, loss, train_f1,
-                                                                                               val_f1, test_f1))
+        # print("Epoch: {:d}, Loss:{:.4f}, Train f1: {:.4f}, Val f1: {:.4f}, Test f1: {:.4f}".format(epoch, loss, train_f1,
+        #                                                                                        val_f1, test_f1))
     test_accs.append(best_test)
     print("Run: {:d}, best_test: {:.4f}".format(run, best_test))
 

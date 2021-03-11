@@ -3,6 +3,9 @@
 
 | |Cora|CiteSeer|PubMed|
 |---|---|---|---|
+|Bi-GCN(2)|34.17(7.15)|33.31(5.13)|62.55(10.89)|
+|Bi-GCN(4)|55.77(6.78)|46.87(7.17)|71.86(6.13)|
+|Bi-GCN(8)|69.82(3.86)|58.51(4.79)|75.69(1.98)|
 |Bi-GCN(16)|77.04(1.54)|64.90(2.02)|76.48(1.31)|
 |Bi-GCN(32)|79.97(1.11)|67.42(1.02)|77.49(1.09)|
 |Bi-GCN(64)|81.21(0.76)|68.79(0.85)|78.28(0.92)|
@@ -12,6 +15,21 @@
 |Bi-GCN(512)|81.47(0.79)|66.07(1.92)|78.32(0.76)|
 
 每个配置运行100次，取均值和样本方差。（不同的100次之间还是有差距，基本都取跑3次的均值的中位数）
+
+| |Cora|CiteSeer|PubMed|
+|---|---|---|---|
+|GCN(2)|27.59(8.21)|30.43(9.13)|54.30(15.93)|
+|GCN(4)|61.98(8.30)|55.15(6.73)|74.36(8.35)|
+|GCN(8)|79.70(2.30)|68.90(2.59)|78.55(2.52)|
+|GCN(16)|81.54(0.59)|70.86(0.65)|79.05(0.36)|
+|GCN(32)|81.58(0.55)|70.92(0.48)|79.12(0.32)|
+|GCN(64)|81.45(0.46)|70.84(0.47)|79.00(0.34)|
+|GCN(96)|81.36(0.48)|70.76(0.44)|78.92(0.37)|
+|GCN(128)|81.25(0.46)|70.58(0.44)|78.84(0.38)|
+|GCN(256)|81.00(0.48)|70.27(0.62)|78.76(0.36)|
+|GCN(512)|80.72(0.54)|69.83(0.64)|78.66(0.50)|
+
+GCN源码：每个配置运行100次，取均值和样本方差。
 
 # Table 2, 3 (full version)
 
@@ -45,33 +63,62 @@
 |Bi-indGCN    | 21.25K   | 17.61M    | 4,184,822,133      |93.1 ± 0.2|
 |GraphSAGE    | 1286.00K | 534.99M   | 80,143,060,383   |95.2 ± 0.1|
 |Bi-GraphSAGE | 42.51K   | 17.61M    | 4,922,389,323      |95.3 ± 0.1|
-|GraphSAINT   | 1798.00K | 534.99M   | 113,173,736,448   |95.2 ± 0.2|
-|Bi-GraphSAINT| 139.62K  | 17.61M    | 10,413,840,303    |95.2 ± 0.1|
+|GraphSAINT   | 1798.00K | 534.99M   | 113,173,736,448   |95.9 ± 0.1|
+|Bi-GraphSAINT| 139.62K  | 17.61M    | 10,413,840,303    |95.7 ± 0.1|
 
 
-|Flickr       |Model Size| Data Size | Cycle Operations | Accuarcy |
-|---          |---       |---        | ---              | ---      |
-|indGCN       | 507.00K  | 170.23M   | 11,820,571,828   |50.9 ± 0.3|
-|Bi-indGCN    | 16.87K   | 5.66M     | 464,580,328      |50.2 ± 0.4|
-|GraphSAGE    | 1014.00K | 170.23M   | 23,404,507,828   |50.9 ± 1.0|
-|Bi-GraphSAGE | 33.74K   | 5.66M     | 692,524,828      |50.2 ± 0.4|
-|GraphSAINT   | 1526.00K | 170.23M   | 35,326,723,072   |51.7 ± 0.1|
-|Bi-GraphSAINT| 65.25K   | 5.66M     | 1,279,075,828    |50.7 ± 0.1|
-
+| Flickr        | Model Size | Data Size | Cycle Operations | Accuarcy   |
+| ------------- | ---------- | --------- | ---------------- | ---------- |
+| indGCN        | 507.00K    | 170.23M   | 11,820,571,828   | 50.9 ± 0.3 |
+| Bi-indGCN     | 16.87K     | 5.66M     | 464,580,328      | 50.2 ± 0.4 |
+| GraphSAGE     | 1014.00K   | 170.23M   | 23,404,507,828   | 50.9 ± 1.0 |
+| Bi-GraphSAGE  | 33.74K     | 5.66M     | 692,524,828      | 50.2 ± 0.4 |
+| GraphSAINT    | 1526.00K   | 170.23M   | 35,326,723,072   | 52.1 ± 0.1 |
+| Bi-GraphSAINT | 65.25K     | 5.66M     | 1,279,075,828    | 50.8 ± 0.2 |
 
 各数据集上的压缩加速比
 
-|Ratio        |Model Size| Data Size | Cycle Operations|
-|---          |---       |---        | ---              
-|Cora         | 31.23    | 31.30     | 53.53
-|CiteSeer     | 31.70    | 31.73     | 60.14
-|PubMed       | 30.00    | 30.08     | 41.06
-|avg          | 30.98    | 31.04     | 51.58
+| Ratio    | Model Size | Data Size | Cycle Operations |
+| -------- | ---------- | --------- | ---------------- |
+| Cora     | 31.23      | 31.30     | 53.53            |
+| CiteSeer | 31.70      | 31.73     | 60.14            |
+| PubMed   | 30.00      | 30.08     | 41.06            |
+| *avg*    | 30.98      | 31.04     | 51.58            |
 
-|Ratio        |Model Size| Data Size | Cycle Operations|
-|---          |---       |---        | ---              
-|Reddit-gcn   | 31.23    | 30.38     | 53.53
-|Reddit-sage  | 31.23    | 30.38     | 53.53
-|Reddit-saint | 31.23    | 30.38     | 53.53
-|Flickr       | 31.70    | 31.73     | 60.14
-|avg          | 31.23    | 
+| Ratio        | Model Size | Data Size | Cycle Operations |
+| ------------ | ---------- | --------- | ---------------- |
+| Reddit-GCN   | 31.23      | 30.38     | 53.53            |
+| Reddit-SAGE  | 31.23      | 30.38     | 53.53            |
+| Reddit-SAINT | 31.23      | 30.38     | 53.53            |
+| Filckr       | 31.70      | 31.73     | 60.14            |
+|              |            |           |                  |
+|              |            |           |                  |
+| avg          | 31.23      |           |                  |
+
+
+
+
+GraphSAINT实验搜索。
+
+```
+echo "Reddit Bi-GraphSAINT"
+# 
+python graphsaint.py --gpu 9 --dataset 'Reddit' --batch 2000 --walk_length 4 --sample_coverage 50 --epochs 100 --lr 0.01 --hidden 128 --dropout 0.1 --binarized
+# float: 95.88(0.06)  binary: 95.66(0.06)
+python graphsaint.py --gpu 4 --dataset 'Reddit' --batch 2000 --walk_length 4 --sample_coverage 50 --epochs 100 --lr 0.003 --hidden 128 --dropout 0.2 --binarized
+
+echo "Flickr Bi-GraphSAINT"
+# float: 51.76(0.14)  binary: 50.78(0.14)
+python graphsaint.py --gpu 2 --dataset 'Flickr' --batch 6000 --walk_length 6 --sample_coverage 100 --epochs 50 --lr 0.001 --hidden 256 --dropout 0.2 --binarized
+# float: 52.32(0.17)  binary: 50.60(0.24)
+python graphsaint.py --gpu 2 --dataset 'Flickr' --batch 6000 --walk_length 6 --sample_coverage 100 --epochs 50 --lr 0.003 --hidden 256 --dropout 0.4 --binarized
+# float: 52.07(0.09)  binary: 50.79(0.17)
+python graphsaint.py --gpu 2 --dataset 'Flickr' --batch 6000 --walk_length 6 --sample_coverage 100 --epochs 50 --lr 0.003 --hidden 256 --dropout 0.4 --binarized
+
+```
+
+搜索范围包括：
+walk_length 2,4,6,8,10
+sample_coverage 50, 100, 200
+lr 0.03,0.01,0.003,0.001,0.0003
+dropout 0.1,0.2,0.3,0.4,0.5,0.6

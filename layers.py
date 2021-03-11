@@ -7,7 +7,7 @@ import math
 import torch_sparse
 from torch_scatter import scatter,scatter_add
 
-from module import BinaryLinear
+from function import BinLinear
 
 
 class myBiGCNConv(MessagePassing):
@@ -16,7 +16,7 @@ class myBiGCNConv(MessagePassing):
         self.cached = cached
         self.bi = bi
         if bi:
-            self.lin = BinaryLinear(in_channels, out_channels, scalar=True)
+            self.lin = BinLinear(in_channels, out_channels)
         else:
             self.lin = torch.nn.Linear(in_channels, out_channels)
 
@@ -68,8 +68,8 @@ class myResBiGCNConv(MessagePassing):
         self.cached = cached
         self.bi = bi
         if bi:
-            self.lin = BinaryLinear(in_channels, out_channels, scalar=True)
-            self.lin_res = BinaryLinear(in_channels, out_channels, scalar=True)
+            self.lin = BinLinear(in_channels, out_channels)
+            self.lin_res = BinLinear(in_channels, out_channels)
         else:
             self.lin = torch.nn.Linear(in_channels, out_channels)
             self.lin_res = torch.nn.Linear(in_channels, out_channels)
@@ -101,7 +101,7 @@ class myResBiGCNConv(MessagePassing):
         edge_index, norm = self.cached_result
 
         # Start propagating message
-        x = self.propagate(edge_index,size=(x.size(0), x.size(0)),
+        x = self.propagate(edge_index, size=(x.size(0), x.size(0)),
                               x=x, norm=norm)
         return x+x_res
 
@@ -146,8 +146,8 @@ class SAGEConv(MessagePassing):
         self.out_channels = out_channels
         self.normalize = normalize
         if bi:
-            self.lin_rel = BinaryLinear(in_channels, out_channels, scalar=True)
-            self.lin_root = BinaryLinear(in_channels, out_channels, scalar=True)
+            self.lin_rel = BinLinear(in_channels, out_channels)
+            self.lin_root = BinLinear(in_channels, out_channels)
         else:
             self.lin_rel = Linear(in_channels, out_channels, bias=True)
             self.lin_root = Linear(in_channels, out_channels, bias=True)
@@ -186,7 +186,7 @@ class indGCNConv(MessagePassing):
         self.out_channels = out_channels
         self.bi = bi
         if bi:
-            self.lin = BinaryLinear(in_channels, out_channels, scalar=True)
+            self.lin = BinLinear(in_channels, out_channels)
         else:
             self.lin = torch.nn.Linear(in_channels, out_channels)
 
@@ -257,8 +257,8 @@ class GraphConv(MessagePassing):
         self.in_channels = in_channels
         self.out_channels = out_channels
         if bi:
-            self.lin = BinaryLinear(in_channels, out_channels, scalar=True)
-            self.lin_root = BinaryLinear(in_channels, out_channels, scalar=True)
+            self.lin = BinLinear(in_channels, out_channels)
+            self.lin_root = BinLinear(in_channels, out_channels)
             # self.lin_root = torch.nn.Linear(in_channels, out_channels, bias=bias)
         else:
             self.lin = torch.nn.Linear(in_channels, out_channels, bias=bias)

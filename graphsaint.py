@@ -26,7 +26,8 @@ from torch_geometric.datasets import Flickr, Reddit
 from torch_geometric.data import GraphSAINTRandomWalkSampler
 from layers import GraphConv
 from torch_geometric.utils import degree
-from module import BinActive
+from function import BinActive
+import time
 
 assert args.dataset in ['Flickr', 'Reddit']
 path = '/home/wangjunfu/dataset/graph/'+str(args.dataset)
@@ -65,14 +66,14 @@ class Net(torch.nn.Module):
         if args.binarized:
             x0 = x0 - x0.mean(dim=1, keepdim=True)
             x0 = x0 / (x0.std(dim=1, keepdim=True) + 0.0001)
-            x0 = BinActive(scalar=True)(x0)
+            x0 = BinActive()(x0)
         x1 = self.conv1(x0, edge_index, edge_weight)
         if not args.binarized:
             x1 = F.relu(x1)
         x1 = F.dropout(x1, p=args.dropout, training=self.training)
 
         if args.binarized:
-            x2 = BinActive(scalar=True)(x1)
+            x2 = BinActive()(x1)
         else:
             x2 = x1
         x2 = self.conv2(x2, edge_index, edge_weight)
@@ -140,16 +141,17 @@ val_f1s, test_f1s = [], []
 for run in range(1, args.runs+1):
     best_val, best_test = 0, 0
     model.reset_parameters()
+    start_time = time.time()
     for epoch in range(1, args.epochs+1):
         loss = train()
         accs = test()
         if accs[1] > best_val:
             best_val = accs[1]
             best_test = accs[2]
-        print(f'Epoch: {epoch:02d}, Loss: {loss:.4f}, Train: {accs[0]:.4f}, '
-              f'Val: {accs[1]:.4f}, Test: {accs[2]:.4f}')
+        # print(f'Epoch: {epoch:02d}, Loss: {loss:.4f}, Train: {accs[0]:.4f}, '
+        #       f'Val: {accs[1]:.4f}, Test: {accs[2]:.4f}')
     test_f1s.append(best_test)
-    print("Run: {:d}, best val: {:.4f}, best test: {:.4f}".format(run, best_val, best_test))
+    print("Run: {:d}, best val: {:.4f}, best test: {:.4f}, time cost: {:d}s".format(run, best_val, best_test, int(time.time()-start_time)))
 
 test_f1s = torch.tensor(test_f1s)
 print("{:.4f} ± {:.4f}".format(test_f1s.mean(), test_f1s.std()))

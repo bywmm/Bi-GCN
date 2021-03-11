@@ -18,13 +18,12 @@ os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu)
 
 
 import torch
-import datetime
 import torch.nn.functional as F
 from layers import myBiGCNConv as BiGCNConv
 from torch_geometric.datasets import Planetoid
 from train_eval import run
-from module import BinActive
-from tensorboardX import SummaryWriter
+from function import BinActive
+# from torch_geometric.nn import GCNConv, GATConv
 
 
 class Net(torch.nn.Module):
@@ -52,7 +51,7 @@ class Net(torch.nn.Module):
         x = self.bn1(x)
 
         for i, conv in enumerate(self.convs):
-            x = BinActive(scalar=True)(x)
+            x = BinActive()(x)
             x = F.dropout(x, p=args.dropout, training=self.training)
             x = conv(x, edge_index)
 
@@ -70,8 +69,6 @@ print("Size of test set:", data.test_mask.sum().item())
 print("Num classes:", dataset.num_classes)
 print("Num features:", dataset.num_features)
 print(args)
-# writer = SummaryWriter('logs/bigcn_loaded_test_log_{0:%Y%m%d%H%M%S%f}'.format(datetime.datetime.now()))
-writer = None
 run(dataset, Net(dataset), args.runs, args.epochs, args.lr, args.weight_decay,
-    args.early_stopping, writer)
+    args.early_stopping)
 
