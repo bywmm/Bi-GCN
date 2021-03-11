@@ -62,61 +62,6 @@ class myBiGCNConv(MessagePassing):
         return aggr_out
 
 
-class myResBiGCNConv(MessagePassing):
-    def __init__(self, in_channels, out_channels, cached=True, bi=False):
-        super(myResBiGCNConv, self).__init__(aggr="add")
-        self.cached = cached
-        self.bi = bi
-        if bi:
-            self.lin = BinLinear(in_channels, out_channels)
-            self.lin_res = BinLinear(in_channels, out_channels)
-        else:
-            self.lin = torch.nn.Linear(in_channels, out_channels)
-            self.lin_res = torch.nn.Linear(in_channels, out_channels)
-
-        self.reset_parameters()
-
-    def reset_parameters(self):
-        self.lin.reset_parameters()
-        self.cached_result = None
-
-    def forward(self, x, edge_index):
-        # shape of x: [N, in_channels]
-        # shape of edge_index: [2, E]
-        x_res = self.lin_res(x)
-        x = self.lin(x)
-
-        if not self.cached or self.cached_result is None:
-            edge_index, _ = add_self_loops(edge_index, num_nodes=x.size(0))
-
-            # Compute normalization
-            row, col = edge_index
-            deg = degree(row, x.size(0), dtype=x.dtype)
-            deg_inv_sqrt = deg.pow(-0.5)
-            # normalization of each edge
-            norm = deg_inv_sqrt[row] * deg_inv_sqrt[col]
-
-            self.cached_result = edge_index, norm
-
-        edge_index, norm = self.cached_result
-
-        # Start propagating message
-        x = self.propagate(edge_index, size=(x.size(0), x.size(0)),
-                              x=x, norm=norm)
-        return x+x_res
-
-    def message(self, x_j, norm):
-        # x_j has shape [E, out_channels]
-
-        # Normalize node features
-        return norm.view(-1, 1) * x_j
-
-    def update(self, aggr_out):
-        # if self.bias is not None:
-        #     aggr_out = aggr_out + self.bias
-        return aggr_out
-
-
 class SAGEConv(MessagePassing):
     r"""The GraphSAGE operator from the `"Inductive Representation Learning on
     Large Graphs" <https://arxiv.org/abs/1706.02216>`_ paper
@@ -179,6 +124,7 @@ class SAGEConv(MessagePassing):
         return '{}({}, {})'.format(self.__class__.__name__, self.in_channels,
                                    self.out_channels)
 
+
 class indGCNConv(MessagePassing):
     def __init__(self, in_channels, out_channels, bi=False):
         super(indGCNConv, self).__init__(aggr="mean")
@@ -229,6 +175,7 @@ class indGCNConv(MessagePassing):
         #     aggr_out = aggr_out + self.bias
         return aggr_out
 
+
 class GraphConv(MessagePassing):
     r"""The graph neural network operator from the `"Weisfeiler and Leman Go
     Neural: Higher-order Graph Neural Networks"
@@ -259,7 +206,6 @@ class GraphConv(MessagePassing):
         if bi:
             self.lin = BinLinear(in_channels, out_channels)
             self.lin_root = BinLinear(in_channels, out_channels)
-            # self.lin_root = torch.nn.Linear(in_channels, out_channels, bias=bias)
         else:
             self.lin = torch.nn.Linear(in_channels, out_channels, bias=bias)
             self.lin_root = torch.nn.Linear(in_channels, out_channels, bias=bias)
