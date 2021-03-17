@@ -122,3 +122,18 @@ walk_length 2,4,6,8,10
 sample_coverage 50, 100, 200
 lr 0.03,0.01,0.003,0.001,0.0003
 dropout 0.1,0.2,0.3,0.4,0.5,0.6
+
+
+### 1. GAT & Bi-GAT
+
+```sh
+python bi-gat.py --gpu 9 --dataset Cora --lr 0.001 --epochs 1000 --early_stopping 0 --exp_name bigat-cora --dropout 0.3 --binarized
+python bi-gat.py --gpu 9 --dataset PubMed --lr 0.001 --epochs 1000 --early_stopping 0 --exp_name bigcn --dropout 0.4 --binarized
+```
+
+
+
+|                       | Cora       | PubMed                  |
+| --------------------- | ---------- | ----------------------- |
+| **GAT**(Paper Report) | 83.0 ± 0.7 | 79.0 ± 0.3              |
+| **Bi-GAT**            | 80.8 ± 0.9 | 77.5 ± 1.0(**with bn**) |
