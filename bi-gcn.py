@@ -3,6 +3,7 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--gpu", default='0', type=str, help='gpu id')
+parser.add_argument('--exp_name', default=None, type=str)
 parser.add_argument('--dataset', type=str, default='Cora')  # Cora/CiteSeer/PubMed
 parser.add_argument('--runs', type=int, default=100)
 parser.add_argument('--epochs', type=int, default=1000)
@@ -19,7 +20,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu)
 
 import torch
 import torch.nn.functional as F
-from layers import myBiGCNConv as BiGCNConv
+from layers import BiGCNConv
 from torch_geometric.datasets import Planetoid
 from train_eval import run
 from function import BinActive
@@ -69,6 +70,6 @@ print("Size of test set:", data.test_mask.sum().item())
 print("Num classes:", dataset.num_classes)
 print("Num features:", dataset.num_features)
 print(args)
-run(dataset, Net(dataset), args.runs, args.epochs, args.lr, args.weight_decay,
+run(args.exp_name, dataset, Net(dataset), args.runs, args.epochs, args.lr, args.weight_decay,
     args.early_stopping)
 

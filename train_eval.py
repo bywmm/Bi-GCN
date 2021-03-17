@@ -5,18 +5,24 @@ import time
 import torch
 import torch.nn.functional as F
 from torch import tensor
-from torch.optim import Adam
+from torch.optim import Adam, SGD
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
-def run(dataset, model, runs, epochs, lr, weight_decay, early_stopping):
+def run(exp_name, dataset, model, runs, epochs, lr, weight_decay, early_stopping):
     val_losses, accs, durations = [], [], []
     for run_num in range(runs):
         data = dataset[0]
         data = data.to(device)
         model.to(device).reset_parameters()
         optimizer = Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
+        # model_float_parameters = filter(lambda p: id(p) not in model.binary_params1 + model.binary_params2, model.parameters())
+        # model_binary_parameters = filter(lambda p: id(p) in model.binary_params1 + model.binary_params2, model.parameters())
+        # optimizer = Adam([
+        #     {'params': model_float_parameters, 'lr': lr },
+        #     {'params': model_binary_parameters}]
+        #     , lr=lr, weight_decay=weight_decay)
 
         if torch.cuda.is_available():
             torch.cuda.synchronize()
@@ -75,6 +81,7 @@ def run(dataset, model, runs, epochs, lr, weight_decay, early_stopping):
 
     loss, acc, duration = tensor(val_losses), tensor(accs), tensor(durations)
 
+    print('Experiment:', exp_name)
     print('Val Loss: {:.4f}, Test Accuracy: {:.4f}, std: {:.4f}, Duration: {:.4f}'.
           format(loss.mean().item(),
                  acc.mean().item(),
