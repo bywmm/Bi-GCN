@@ -17,10 +17,10 @@ def run(exp_name, dataset, model, runs, epochs, lr, weight_decay, early_stopping
         data = data.to(device)
         model.to(device).reset_parameters()
         optimizer = Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
-        # model_float_parameters = filter(lambda p: id(p) not in model.binary_params1 + model.binary_params2, model.parameters())
-        # model_binary_parameters = filter(lambda p: id(p) in model.binary_params1 + model.binary_params2, model.parameters())
+        # model_float_parameters = filter(lambda p: id(p) in model.float_params1 + model.float_params2, model.parameters())
+        # model_binary_parameters = filter(lambda p: id(p) not in model.float_params1 + model.float_params2, model.parameters())
         # optimizer = Adam([
-        #     {'params': model_float_parameters, 'lr': lr },
+        #     {'params': model_float_parameters, 'lr': 0.0*lr},
         #     {'params': model_binary_parameters}]
         #     , lr=lr, weight_decay=weight_decay)
 

@@ -11,7 +11,7 @@ parser.add_argument('--runs', type=int, default=10)
 parser.add_argument('--epochs', type=int, default=100)  # 100, 50
 parser.add_argument('--lr', type=float, default=0.01)  # 0.01, 0.001
 parser.add_argument('--weight_decay', type=float, default=0.0005)
-parser.add_argument('--hidden', type=int, default=128)  # 128, 256
+parser.add_argument('--hidden', type=int, default=256)  # 128, 256
 parser.add_argument('--dropout', type=float, default=0.1)  # 0.1, 0.2
 parser.add_argument('--use_normalization', action='store_true')
 parser.add_argument('--binarized', action='store_true')

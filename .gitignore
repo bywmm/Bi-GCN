@@ -7,3 +7,5 @@ logs/
 __pycache__/
 
 output/
+
+entropy_analysis/

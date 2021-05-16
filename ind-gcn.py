@@ -4,7 +4,7 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("--gpu", default='0', type=str, help='gpu id')
 parser.add_argument('--dataset', type=str, default='Reddit')  # Reddit; Flickr
-parser.add_argument('--batch', type=int, default=512)  # 512; 1024
+parser.add_argument('--batch', type=int, default=512)         # 512; 1024
 parser.add_argument('--runs', type=int, default=10)
 parser.add_argument('--epochs', type=int, default=10)
 parser.add_argument('--lr', type=float, default=0.01)

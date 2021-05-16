@@ -35,8 +35,8 @@ echo "Flickr Bi-GraphSAGE"
 python graphsage.py --gpu 4 --epochs 20 --dataset Flickr --binarized
 
 echo "Reddit Bi-GraphSAINT"
-python graphsaint.py --gpu 4 --dataset 'Reddit' --batch 2000 --walk_length 4 --sample_coverage 50 --epochs 100 --lr 0.003 --hidden 128 --dropout 0.2 --binarized
+python graphsaint.py --gpu 8 --dataset Reddit --batch 2000 --walk_length 4 --sample_coverage 50 --epochs 100 --lr 0.003 --hidden 128 --dropout 0.2 --binarized
 
 echo "Flickr Bi-GraphSAINT"
-python graphsaint.py --gpu 7 --dataset 'Flickr' --batch 6000 --walk_length 6 --sample_coverage 100 --epochs 50 --lr 0.003 --hidden 256 --dropout 0.4 --binarized
+python graphsaint.py --gpu 7 --dataset Flickr --batch 6000 --walk_length 6 --sample_coverage 100 --epochs 50 --lr 0.003 --hidden 256 --dropout 0.4 --binarized
 ```

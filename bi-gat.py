@@ -53,11 +53,11 @@ class Net(torch.nn.Module):
         # self.conv1 = BiGCNConv(dataset.num_features, args.hidden*args.heads, cached=True, bi=args.binarized)
         # self.conv2 = BiGCNConv(args.hidden*args.heads, dataset.num_classes, cached=True, bi=args.binarized)
 
+        # Note that for GAT, we set the affine=True for bn layers.
         self.bn1 = torch.nn.BatchNorm1d(dataset.num_features, affine=False)
-        self.bn2 = torch.nn.BatchNorm1d(args.hidden * args.heads, affine=False)
-
-        self.binary_params1 = list(map(id, self.conv1.lin_l.parameters()))
-        self.binary_params2 = list(map(id, self.conv2.lin_l.parameters()))
+        #
+        # self.float_params1 = list(map(id, self.conv1.float_parameter))
+        # self.float_params2 = list(map(id, self.conv2.float_parameter))
 
     def reset_parameters(self):
         self.conv1.reset_parameters()
