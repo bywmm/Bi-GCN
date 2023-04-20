@@ -1,3 +1,4 @@
+import os
 import argparse
 
 import torch
@@ -68,7 +69,7 @@ def main():
 
     assert args.dataset in ['Flickr', 'Reddit'], 'For dataset, only Flickr and Reddit are available'
 
-    path = '/home/wangjunfu/dataset/graph/' + str(args.dataset)
+    path = os.path.join(os.environ["HOME"], f'dataset/graph/{args.dataset}')
     if args.dataset == 'Flickr':
         dataset = Flickr(path)
     else:

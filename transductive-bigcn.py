@@ -1,5 +1,6 @@
 from __future__ import division
 
+import os
 import time
 import argparse
 
@@ -121,7 +122,8 @@ def main():
     print(args)
 
     device = torch.device(f'cuda:{args.device}' if torch.cuda.is_available() else 'cpu')
-    root = '/home/wangjunfu/dataset/graph/Planetoid'
+    root = os.path.join(os.environ["HOME"], 'dataset/graph/Planetoid')
+    # root = 'data/Planetoid'
     dataset = Planetoid(root, args.dataset)
 
     data = dataset[0]
