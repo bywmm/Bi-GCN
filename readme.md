@@ -13,7 +13,7 @@ Please cite our paper if you use this code in your own work:
 ```
 
 ```
-@ARTICLE{wang2023,
+@ARTICLE{wang2024,
   author={Wang, Junfu and Guo, Yuanfang and Yang, Liang and Wang, Yunhong},
   journal={IEEE Transactions on Pattern Analysis and Machine Intelligence}, 
   title={Binary Graph Convolutional Network With Capacity Exploration}, 
